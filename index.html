@@ -1,68 +1,24 @@
 <!DOCTYPE html>
-<html ng-app>
+<html ng-app> <!-- ng-app used for angular -->
   <head>
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
     <link rel="stylesheet" type="text/css" href="css/index.css" />
-<!--     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" /> -->
-
-    <link rel="stylesheet" type="text/css" href="css/topcoat-mobile-dark.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
 
     <title>Hello World</title>
   </head>
-<body class="left-nav">
-        <div class="topcoat-navigation-bar">
-            <div class="topcoat-navigation-bar__item left quarter">
-                <a id="slide-menu-button" class="topcoat-icon-button--quiet slide-menu-button">
-                    <span class="topcoat-icon topcoat-icon--menu-stack"></span>
-                </a>
-            </div>
-            <div class="topcoat-navigation-bar__item center half">
-                <h1 class="topcoat-navigation-bar__title">Topcoat Drawer</h1>
-            </div>
-            <div class="topcoat-navigation-bar__item right quarter">
-                <a class="topcoat-icon-button--quiet">
-                    <span class="topcoat-icon topcoat-icon--edit"></span>
-                </a>
-            </div>
-        </div>
-        <nav class="side-nav">
-            <div class="topcoat-list__container side-nav__list__container">
-                <ul class="topcoat-list side-nav__list">
-                    <li class="topcoat-list__item side-nav__list__item">
-                        <a href="#" class="side-nav__button">Item</a>
-                    </li>
-                    <li class="topcoat-list__item side-nav__list__item is-active">
-                        <a href="#" class="side-nav__button">Item</a>
-                    </li>
-                    <li class="topcoat-list__item side-nav__list__item">
-                        <a href="#" class="side-nav__button">Item</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        <div class="main-content">
-	        <div ng-controller="TodoCtrl">
-				    <span>{{remaining()}} of {{todos.length}} remaining</span>
-				    <a href="" ng-click="archive()">archive</a>
-				    <ul class="unstyled">
-				      <li ng-repeat="todo in todos">
-				        <label class="topcoat-checkbox">
-									<input type="checkbox" ng-model="todo.done">
-								  <div class="topcoat-checkbox__checkmark"></div>
-								</label>
-				        <p class="done-{{todo.done}}">{{todo.text}}</p>
-				      </li>
-				    </ul>
-				    <form ng-submit="addTodo()">
-				      <input type="text" class="topcoat-text-input" ng-model="todoText"  size="30"
-				             placeholder="add new todo here">
-				      <input class="topcoat-button--cta" type="submit" value="add">
-				    </form>
-					</div>
-        </div>
+  
+  <body>
+  
+		<!--header -->
+  
+		<!--Main content -->
+		<div class="container">
+			<h1 class="text-center">Hello world</h1>
+		</div>
 
 		<!-- Footer -->
 

@@ -7,6 +7,8 @@
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
     <link rel="stylesheet" type="text/css" href="src/css/index.css" />
     <link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css" />
+    <script type="text/javascript" src="src/js/angular.min.js"></script>
+		<script type="text/javascript" src="src/js/angular/controllers.js"></script>
 
     <title>Hello World</title>
   </head>
@@ -26,20 +28,13 @@
 	          </tr>
 	        </thead>
 	        <tbody>
-	          <tr>
-	            <td ng-repeat="bet in bets"> {{bet.desciption}}</td>
-	            <td ng-repeat="name in bets">{{bet.name}}</td>
-	          </tr>
-	          <tr>
-	            <td>Væddemål2</td>
-	            <td>Bob</td>
-	          </tr>
-	          <tr>
-	            <td>Væddemål3</td>
-	            <td>Jonas</td>
+	          <tr ng-repeat="i in bets">
+	            <td> {{i.bet}}</td>
+	            <td>{{i.name}}</td>
 	          </tr>
 	        </tbody>
 	      </table>
+	      <p>Total number of bets: {{bets.length}}</p>
 	      <h2 class="text-center">Angular test : 1 + 2 = {{ 1 + 2 }}</h2>
 		</div>
 
@@ -48,7 +43,5 @@
 		<!-- end footer -->
 <!--   <script type="text/javascript" src="cordova.js"></script> -->
   <script type="text/javascript" src="src/js/index.js"></script>
-  <script type="text/javascript" src="src/js/angular.min.js"></script>
-  <script type="text/javascript" src="src/js/angular/Controllers.js"></script>
 </body>
 </html>

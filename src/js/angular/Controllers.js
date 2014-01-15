@@ -8,7 +8,7 @@ betApp.controller('BetListCtrl', function ($scope) {
      'name': 'Søren'}
   ];
 
-	$scope.addItem = function () {
+	$scope.SaveBet = function () {
 
     $scope.bets.push({
         amount: $scope.bet,

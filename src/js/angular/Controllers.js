@@ -1,6 +1,7 @@
 var betApp = angular.module('betApp', []);
  
 betApp.controller('BetListCtrl', function ($scope) {
+  
   $scope.bets = [
     {'bet': 'Jeg er hurtigere',
      'name': 'Jonas'},
@@ -8,10 +9,12 @@ betApp.controller('BetListCtrl', function ($scope) {
      'name': 'Søren'}
   ];
 
+});
+
 	$scope.SaveBet = function () {
 
     $scope.bets.push({
-        amount: $scope.bet,
+        bet: $scope.bet,
         name: $scope.name
     });
 
@@ -19,5 +22,4 @@ betApp.controller('BetListCtrl', function ($scope) {
     $scope.bet = "";
     $scope.name = "";
 
-};
-});
+		};

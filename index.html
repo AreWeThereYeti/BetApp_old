@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!doctype html>
 <html>
   <head>
@@ -8,3 +9,76 @@
   <body>
   </body>
 </html>
+=======
+<!DOCTYPE html>
+<html ng-app> <!-- ng-app used for angular -->
+  <head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+    <link rel="stylesheet" type="text/css" href="src/css/index.css" />
+    <link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css" />
+
+    <title>Hello World</title>
+  </head>
+  
+  <body>
+  
+		<!--header -->
+  
+		<!--Main content -->
+		<div class="container">
+			<h1 class="text-center">Hello world</h1>
+		
+		
+			<!-- bottom new-bet-buttons -->
+			<div class="front-buttons">
+				<button type="button" class="btn btn-success" id="new-bet-btn" data-toggle="modal" data-target="#new-bet-mod">New Bet</button>
+				<button type="button" class="btn btn-warning" id="audio-bet-btn">I'm Drunk</button>
+			</div>
+			
+			<!-- Modal for new-bet-btn -->
+			<div class="modal fade" id="new-bet-mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" id="myModalLabel">Add A New Bet</h4>
+			      </div>
+			      <div class="modal-body">
+			      
+			      	<!-- Form for adding new bet -->
+			      	<form class="form-horizontal" role="form">					  	
+			      		<textarea class="form-control" id="new-bet-content" rows="3" placeholder="Enter bet terms"></textarea>
+			      		<input type="text" class="form-control" id="bet-participants" placeholder="Who are you betting?">
+			      		<div class="form-group">
+				      		<label for="bet-deadline" class="col-sm-2 control-label">Deadline</label>
+				      		<div class="col-sm-10">
+					      		<input type="date" class="form-control" id="bet-deadline">
+				      		</div>
+			      		</div>
+					</form> 
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="button" class="btn btn-primary">Save Bet</button>
+			      </div>
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			
+		</div>
+
+		<!-- Footer -->
+
+		<!-- end footer -->
+<!--   <script type="text/javascript" src="src/cordova.js"></script> -->
+  <script type="text/javascript" src="src/js/index.js"></script>
+  <script type="text/javascript" src="src/js/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="src/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="src/js/angular.min.js"></script>
+</body>
+</html>
+>>>>>>> 5f85ef0e0b9ca9122f48042d51a143348e59e5af

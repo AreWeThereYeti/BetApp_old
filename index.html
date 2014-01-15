@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app> <!-- ng-app used for angular -->
+<html ng-app="betApp"> <!-- ng-app used for angular -->
   <head>
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
@@ -7,6 +7,8 @@
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
     <link rel="stylesheet" type="text/css" href="src/css/index.css" />
     <link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css" />
+    <script type="text/javascript" src="src/js/angular.min.js"></script>
+		<script type="text/javascript" src="src/js/angular/controllers.js"></script>
 
     <title>Hello World</title>
   </head>
@@ -17,14 +19,67 @@
   
 		<!--Main content -->
 		<div class="container">
-			<h1 class="text-center">Hello world</h1>
+			<h1 class="text-center">BetApp</h1>
+				<table ng-controller="BetListCtrl" class="table table-hover">
+	        <thead>
+	          <tr>
+	            <th>Hvad er væddemålet?</th>
+	            <th>Hvem har du lavet væddemålet med?</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-repeat="item in bets">
+	            <td> {{item.bet}}</td>
+	            <td>{{item.name}}</td>
+	          </tr>
+	        </tbody>
+	      </table>
+	      <p>Total number of bets: {{bets.length}}</p>
+	      <h2 class="text-center">Angular test : 1 + 2 = {{ 1 + 2 }}</h2>
+		
+			<!-- bottom new-bet-buttons -->
+			<div class="front-buttons">
+				<button type="button" class="btn btn-success" id="new-bet-btn" data-toggle="modal" data-target="#new-bet-mod">New Bet</button>
+				<button type="button" class="btn btn-warning" id="audio-bet-btn">I'm Drunk</button>
+			</div>
+			
+			<!-- Modal for new-bet-btn -->
+			<div class="modal fade" id="new-bet-mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" id="myModalLabel">Add A New Bet</h4>
+			      </div>
+			      <div class="modal-body">
+			      
+			      	<!-- Form for adding new bet -->
+			      	<form class="form-horizontal" role="form">					  	
+			      		<textarea class="form-control" id="new-bet-content" rows="3" placeholder="Enter bet terms"></textarea>
+			      		<div class="form-group">
+				      		<label for="bet-participants">Bet Participants</label>
+				      		<input type="text" class="form-control" id="bet-participants" placeholder="Who are you betting?">
+			      		</div>
+			      		<div class="form-group">
+				      		<label for="bet-deadline">Optional deadline</label>
+					      	<input type="date" class="form-control" id="bet-deadline">
+			      		</div>
+					</form> 
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="button" ng-click="SaveBet()" class="btn btn-primary">Save Bet</button>
+			      </div>
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
 		</div>
-
 		<!-- Footer -->
 
 		<!-- end footer -->
-  <script type="text/javascript" src="src/cordova.js"></script>
+<!--   <script type="text/javascript" src="cordova.js"></script> -->
+  <script type="text/javascript" src="src/js/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="src/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="src/js/index.js"></script>
-  <script type="text/javascript" src="src/js/angular.min.js"></script>
 </body>
 </html>

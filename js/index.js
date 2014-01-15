@@ -13,12 +13,10 @@ window.onload = function () {
 }
 
 function TodoCtrl($scope) {
-  $scope.todos = [
-  {
-	  text:'learn your mom', done:false
-  }
-  
-  ];
+  $scope.todos = 
+  	[{
+		  text:'learn your mom', done:false
+	  }];
  
   $scope.addTodo = function() {
     $scope.todos.push({text:$scope.todoText, done:false});

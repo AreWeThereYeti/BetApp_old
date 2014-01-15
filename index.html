@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app> <!-- ng-app used for angular -->
+<html ng-app="betApp"> <!-- ng-app used for angular -->
   <head>
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
@@ -18,7 +18,7 @@
 		<!--Main content -->
 		<div class="container">
 			<h1 class="text-center">BetApp</h1>
-				<table class="table table-hover">
+				<table ng-controller="BetListCtrl" class="table table-hover">
 	        <thead>
 	          <tr>
 	            <th>Hvad er væddemålet?</th>
@@ -27,8 +27,8 @@
 	        </thead>
 	        <tbody>
 	          <tr>
-	            <td>Væddemål1</td>
-	            <td>Søren</td>
+	            <td ng-repeat="bet in bets"> {{bet.desciption}}</td>
+	            <td ng-repeat="name in bets">{{bet.name}}</td>
 	          </tr>
 	          <tr>
 	            <td>Væddemål2</td>
@@ -40,7 +40,7 @@
 	          </tr>
 	        </tbody>
 	      </table>
-	      <p>Angular test : 1 + 2 = {{ 1 + 2 }}</p>
+	      <h2 class="text-center">Angular test : 1 + 2 = {{ 1 + 2 }}</h2>
 		</div>
 
 		<!-- Footer -->
@@ -49,5 +49,6 @@
 <!--   <script type="text/javascript" src="cordova.js"></script> -->
   <script type="text/javascript" src="src/js/index.js"></script>
   <script type="text/javascript" src="src/js/angular.min.js"></script>
+  <script type="text/javascript" src="src/js/angular/Controllers.js"></script>
 </body>
 </html>

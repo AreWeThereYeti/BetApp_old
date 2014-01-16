@@ -8,12 +8,12 @@
     <link rel="stylesheet" type="text/css" href="src/css/index.css" />
     <link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css" />
     <script type="text/javascript" src="src/js/angular.min.js"></script>
-		<script type="text/javascript" src="src/js/angular/controllers.js"></script>
+
 
     <title>Hello World</title>
   </head>
   
-  <body>
+  <body ng-controller='AppCtrl'>
   
 		<!--header -->
   
@@ -55,10 +55,10 @@
 			      
 			      	<!-- Form for adding new bet -->
 			      	<form class="form-horizontal" role="form">					  	
-			      		<textarea class="form-control" id="new-bet-content" rows="3" placeholder="Enter bet terms"></textarea>
+			      		<textarea class="form-control" id="new-bet-content" rows="3" ng-model="bets.bet" placeholder="Enter bet terms"></textarea>
 			      		<div class="form-group">
 				      		<label for="bet-participants">Bet Participants</label>
-				      		<input type="text" class="form-control" id="bet-participants" placeholder="Who are you betting?">
+				      		<input type="text" class="form-control" id="bet-participants" ng-model="bets.name" placeholder="Who are you betting?">
 			      		</div>
 			      		<div class="form-group">
 				      		<label for="bet-deadline">Optional deadline</label>
@@ -81,5 +81,10 @@
   <script type="text/javascript" src="src/js/jquery-2.0.3.min.js"></script>
   <script type="text/javascript" src="src/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="src/js/index.js"></script>
+  <script type="text/javascript" src="src/js/angular/directives/directives.js"></script>
+	<script type="text/javascript" src="src/js/angular/controller.js"></script>
+	<script type="text/javascript" src="src/js/angular/controllers/BetListCtrl.js"></script>
+
+  
 </body>
 </html>

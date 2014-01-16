@@ -46,7 +46,7 @@ function AppCtrl($scope) {
 		};
 
 	/* --------------  Database ---------------- */	 	
-/* 		Initialize database */
+	/* 		Initialize database */
 	$scope.initializeDB = function(){
 	
 			// initial variables

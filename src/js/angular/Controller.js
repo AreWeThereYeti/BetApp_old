@@ -1,15 +1,6 @@
 var betApp = angular.module('betApp', []);
- 
-betApp.controller('BetListCtrl', function ($scope) {
-  
-  $scope.bets = [
-    {'bet': 'Jeg er hurtigere',
-     'name': 'Jonas'},
-    {'bet': 'Jeg er hurtigere. Jeg er hurtigere.',
-     'name': 'Søren'}
-  ];
 
-});
+betApp.controller('AppCtrl',function($scope,$element,$attrs,$compile,Helpers) {
 
 	$scope.SaveBet = function () {
 
@@ -23,3 +14,6 @@ betApp.controller('BetListCtrl', function ($scope) {
     $scope.name = "";
 
 		};
+
+});
+

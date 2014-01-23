@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html ng-app="betApp"> <!-- ng-app used for angular -->
   <head>
     <meta charset="utf-8" />
@@ -7,6 +8,7 @@
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
     <link rel="stylesheet" type="text/css" href="src/css/index.css" />
     <link rel="stylesheet" type="text/css" href="src/css/bootstrap.min.css" />
+
     <script type="text/javascript" src="src/js/angular.min.js"></script>
 
     <title>Hello World</title>
@@ -18,6 +20,7 @@
   
 		<!--Main content -->
 		<div class="container">
+
 			<h1 class="text-center">BetApp</h1>
 				<table ng-controller="BetListCtrl" class="table table-hover">
 	        <thead>
@@ -54,14 +57,20 @@
 			      
 			      	<!-- Form for adding new bet -->
 			      	<form class="form-horizontal" role="form">					  	
+
 			      		<textarea class="form-control" id="new-bet-content" rows="3" ng-model="bets.bet" placeholder="Enter bet terms"></textarea>
+
 			      		<div class="form-group">
 				      		<label for="bet-participants">Bet Participants</label>
 				      		<input type="text" class="form-control" id="bet-participants" ng-model="bets.name" placeholder="Who are you betting?">
 			      		</div>
 			      		<div class="form-group">
-				      		<label for="bet-deadline">Optional deadline</label>
+				      		<label for="bet-deadline">Optional Deadline</label>
 					      	<input type="date" class="form-control" id="bet-deadline">
+			      		</div>
+			      		<div class="form-group">
+				      		<label for="bet-prize">The Bet Prize</label>
+					      	<input type="text" class="form-control" id="bet-prize" placeholder="What are you betting?">
 			      		</div>
 					</form> 
 			      </div>
@@ -73,6 +82,7 @@
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
 		</div>
+
 		<!-- Footer -->
 
 		<!-- end footer -->

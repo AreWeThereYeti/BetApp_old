@@ -18,8 +18,9 @@ function AppCtrl($scope) {
 /*  		$scope.dropTables();  */
 
 /* 		End of debugging functions */
-		$scope.initializeDB();	
-    $scope.pushBetDBToObject();	
+		$scope.initializeDB()
+		$scope.pushBetDBToObject()	
+			
 	}
 
 	$scope.SaveBet = function () {
@@ -87,11 +88,15 @@ function AppCtrl($scope) {
 			tx.executeSql('SELECT * FROM Bet', [], function (tx, result){	 
 				var dataset = result.rows; 
 				for (var i = 0, item = null; i < dataset.length; i++) {
-					item = dataset.item(i);			
-					$scope.bets.push({
-		        bet: item['_bet_description'],
-		        name: item['_name']
-			    });
+
+					item = dataset.item(i);
+					
+					$scope.$apply(
+						$scope.bets.push({
+							bet: item['_bet_description'],
+							name: item['_name']
+						})
+					);
 				}
 			});
 		},function error(err){

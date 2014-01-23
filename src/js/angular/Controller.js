@@ -19,8 +19,7 @@ function AppCtrl($scope) {
 
 /* 		End of debugging functions */
 		$scope.initializeDB();	
-		$scope.pushBetDBToObject();	
-
+    $scope.pushBetDBToObject();	
 	}
 
 	$scope.SaveBet = function () {
@@ -98,8 +97,7 @@ function AppCtrl($scope) {
 		},function error(err){
 			console.log(err)
 		}, function success(){});
-		$scope.$apply
-		$scope.bets;
+
 	}	
 	
 		/* Syncs with server */

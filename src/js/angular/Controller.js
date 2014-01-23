@@ -18,9 +18,9 @@ function AppCtrl($scope) {
 /*  		$scope.dropTables();  */
 
 /* 		End of debugging functions */
-		$scope.initializeDB()	
-		$scope.pushBetDBToObject($scope.bets);	
-		
+		$scope.initializeDB()
+		$scope.pushBetDBToObject()	
+			
 	}
 
 	$scope.SaveBet = function () {
@@ -93,10 +93,10 @@ function AppCtrl($scope) {
 				for (var i = 0, item = null; i < dataset.length; i++) {
 					item = dataset.item(i);
 					
-					$scope.bets.push({
-		        bet: item['_bet_descripton'],
-		        name: item['_name']
-			    });
+					$scope.$apply($scope.bets.push({
+						bet: item['_bet_description'],
+						name: item['_name']
+						}));
 					
 /*
 					$scope.bets.bet = item['_bet_descripton'];

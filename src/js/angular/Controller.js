@@ -10,7 +10,6 @@ function AppCtrl($scope) {
 
 	$scope.init = function(){
 	
-	  $scope.bets = [];
 
 	   console.log("best er" + $scope.bets);
 	   
@@ -20,7 +19,7 @@ function AppCtrl($scope) {
 
 /* 		End of debugging functions */
 		$scope.initializeDB();	
-			$scope.pushBetDBToObject();	
+		$scope.pushBetDBToObject();	
 
 	}
 
@@ -83,6 +82,7 @@ function AppCtrl($scope) {
 	}
 	
 	$scope.pushBetDBToObject = function (){
+		$scope.bets = [];
 		console.log("best er" + $scope.bets);
 		$scope.db.transaction(function (tx){
 			tx.executeSql('SELECT * FROM Bet', [], function (tx, result){	 
@@ -98,6 +98,8 @@ function AppCtrl($scope) {
 		},function error(err){
 			console.log(err)
 		}, function success(){});
+		$scope.$apply
+		$scope.bets;
 	}	
 	
 		/* Syncs with server */

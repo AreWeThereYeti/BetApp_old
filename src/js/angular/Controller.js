@@ -12,31 +12,26 @@ function AppCtrl($scope) {
 	
 	  $scope.bets = [];
 
-	
+	   console.log("best er" + $scope.bets);
+	   
 /* 		debugging function */
 
 /*  		$scope.dropTables();  */
 
 /* 		End of debugging functions */
-		$scope.initializeDB()	
-		
-		$scope.pushBetDBToObject();	
-		
+		$scope.initializeDB();	
+			$scope.pushBetDBToObject();	
+
 	}
 
 	$scope.SaveBet = function () {
 
 		$scope.AddValuesToDB($scope.bets)
-
-    $scope.bets.push({
-        bet: $scope.bets.bet,
-        name: $scope.bets.name
-    });
     
     console.log($scope.bets)
 
     // Clear input fields after push
-    $scope.bet = "";
+    $scope.bet 	= "";
     $scope.name = "";
 
 	};
@@ -69,7 +64,7 @@ function AppCtrl($scope) {
 			// this line actually creates the table User if it does not exist and sets up the three columns and their types
 			// note the UserId column is an auto incrementing column which is useful if you want to pull back distinct rows
 			// easily from the table.
-			tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _name varchar, _timestamp int, _comments varchar)', [])
+			tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _name varchar, _timestamp int, _comments varchar)', []);
 			
 			},
 			function error(err){alert('error on init local db ' + err)}, function success(){console.log("database created")}
@@ -88,6 +83,7 @@ function AppCtrl($scope) {
 	}
 	
 	$scope.pushBetDBToObject = function (){
+		console.log("best er" + $scope.bets);
 		$scope.db.transaction(function (tx){
 			tx.executeSql('SELECT * FROM Bet', [], function (tx, result){	 
 				var dataset = result.rows; 

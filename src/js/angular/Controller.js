@@ -19,7 +19,8 @@ function AppCtrl($scope) {
 
 /* 		End of debugging functions */
 		$scope.initializeDB()	
-		$scope.pushBetDBToObject($scope.bets);	
+		
+		$scope.pushBetDBToObject();	
 		
 	}
 
@@ -91,17 +92,11 @@ function AppCtrl($scope) {
 			tx.executeSql('SELECT * FROM Bet', [], function (tx, result){	 
 				var dataset = result.rows; 
 				for (var i = 0, item = null; i < dataset.length; i++) {
-					item = dataset.item(i);
-					
+					item = dataset.item(i);			
 					$scope.bets.push({
-		        bet: item['_bet_descripton'],
+		        bet: item['_bet_description'],
 		        name: item['_name']
 			    });
-					
-/*
-					$scope.bets.bet = item['_bet_descripton'];
-					$scope.bets.name = item['_name'];	
-*/	
 				}
 			});
 		},function error(err){

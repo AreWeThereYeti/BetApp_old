@@ -23,8 +23,8 @@ function AppCtrl($scope, $http) {
 
 	$scope.SaveBet = function () {
 		console.log("pushing to server");
-		$scope.PushToServer($scope.bets, $http)
-		console.log("scope.bets er " + angular.toJson($scope.bets))
+		$scope.PushToServer($scope.bets[$scope.bets.length - 1], $http)
+		console.log("scope.bets[0] er " + angular.toJson($scope.bets[$scope.bets.length - 1]))
 		console.log("name er " + $scope.bets.name)
 		$scope.AddValuesToDB($scope.bets)
 		console.log("scope.bets er " + $scope.bets)
@@ -123,7 +123,7 @@ function AppCtrl($scope, $http) {
 	$scope.PushToServer = function(bet, $http){
 		console.log("$scope.bets json er : " + angular.toJson($scope.bets));
 		$scope.method = 'POST';
-	  $scope.url = 'http://192.168.1.175:3000';
+	  $scope.url = 'http://192.168.1.175:3000'; //Change to server address
 		$http({
 			method	: $scope.method, 
 			url			: $scope.url + "/bets",

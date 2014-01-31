@@ -1,7 +1,7 @@
 
 
 /* User controller with angularjs */
-function AppCtrl($scope) {
+function AppCtrl($scope, $http) {
 
 	$scope.shortName = 'WebSqlDB';
 	$scope.version = '1.0';
@@ -9,8 +9,6 @@ function AppCtrl($scope) {
 	$scope.maxSize = 65535;
 
 	$scope.init = function(){
-	
-
 	   console.log("best er" + $scope.bets);
 	   
 /* 		debugging function */
@@ -24,25 +22,23 @@ function AppCtrl($scope) {
 	}
 
 	$scope.SaveBet = function () {
-
+		console.log("pushing to server");
+		$scope.PushToServer($scope.bets, $http)
+		console.log("scope.bets er " + angular.toJson($scope.bets))
+		console.log("name er " + $scope.bets.name)
 		$scope.AddValuesToDB($scope.bets)
-    
-    console.log($scope.bets)
+		console.log("scope.bets er " + $scope.bets)
 
+    
     // Clear input fields after push
     $scope.bet 	= "";
     $scope.name = "";
     
-    $scope.PushToServer($scope.bets)
-
 	};
 
 	/* --------------  Database ---------------- */	 	
 	/* 		Initialize database */
-	$scope.initializeDB = function(){
-	
-			// initial variables
-	 
+	$scope.initializeDB = function(){	 
 		// This alert is used to make sure the application is loaded correctly
 		// you can comment this out once you have the application working
 		console.log("DEBUGGING: we are in the InitializeDB function");
@@ -74,8 +70,6 @@ function AppCtrl($scope) {
 	
 		// this is the function that puts values into the database from page #home
 	$scope.AddValuesToDB = function(bet) {
-/* 		$scope.start_timestamp = moment().format("HH:mm:ss DD-MM-YYYY") */
-
 		// this is the section that actually inserts the values into the User table
 		$scope.db.transaction(function(transaction) {
 			transaction.executeSql('INSERT INTO Bet(_bet_description, _name) VALUES ("'+bet.bet+'", "'+bet.name+'")');	
@@ -85,7 +79,7 @@ function AppCtrl($scope) {
 	
 	$scope.pushBetDBToObject = function (){
 		$scope.bets = [];
-		console.log("best er" + $scope.bets);
+		console.log("bets er" + $scope.bets);
 		$scope.db.transaction(function (tx){
 			tx.executeSql('SELECT * FROM Bet', [], function (tx, result){	 
 				var dataset = result.rows; 
@@ -105,55 +99,7 @@ function AppCtrl($scope) {
 			console.log(err)
 		}, function success(){});
 
-	}	
-	
-		/* Syncs with server JQUERY*/
-	$scope.InsertRecordOnServerFunction = function(trips){  // Function for insert Record into SQl Server
-		console.log('InsertRecordOnServerFunction')
-		if($scope.isAllowedToSync == true){	
-			$scope.isAllowedToSync = false;
-			console.log('posting trip to:')
-			console.log($scope.host + "/api/v1/trips")
-			$.ajax({
-				type: "POST",
-				url: $scope.host + "/api/v1/trips",
-				data :  {
-				     access_token	: $scope.access_token, // Skal kun sættes en gang ind i databasen
-				     trips			: trips,
-				     device_id		: $scope.imei
-				 },
-							
-				processdata: true,
-				success: function (msg)
-				{
-					console.log('succes!!!!')
-					//On Successfull service call
-					$scope.dropAllRows(); //Uncomment this when success message is received. Make this function receive synced rows from server
-					$scope.isAllowedToSync = true; 
-				},
-				error: function (msg) {
-					window.msg = msg;
-					console.log(msg);
-					console.log(msg.status);
-					if(!!msg.responseText && !!msg.responseText.err_ids){				
-						if(JSON.parse(msg.responseText).err_ids != 0){	
-							$scope.dropRowsSynced(JSON.parse(msg.responseText).err_ids)
-						}
-					}
-	
-					else if(msg.status == 401){
-						$scope.resetAccessToken()
-					}	
-					
-					else if(msg.status == 404){
-						console.log("404 error ")				
-					}
-					$scope.isAllowedToSync = true;						
-				}
-			});
-		}
-	};
-	
+	}
 
 	$scope.dropTables = function(){
 
@@ -174,13 +120,14 @@ function AppCtrl($scope) {
 	}
 	
 			/* Add data to server, ANGULAR*/
-	$scope.PushToServer = function($scope){
+	$scope.PushToServer = function(bet, $http){
+		console.log("$scope.bets json er : " + angular.toJson($scope.bets));
 		$scope.method = 'POST';
 	  $scope.url = 'http://192.168.1.175:3000';
 		$http({
 			method	: $scope.method, 
 			url			: $scope.url + "/bets",
-			data    : $scope.bets,  // pass in data as strings
+			data    : angular.toJson(bet),  
 			})
 			.success(function(data, status, headers, config) {
 		    // this callback will be called asynchronously
@@ -192,14 +139,5 @@ function AppCtrl($scope) {
 		    // or server returns response with an error status.
 		    console.log("Error")
 	  });
-  }
-	
+  }	
 };
-	
-	
-		$http({
-        method  : 'POST',
-        url     : 'process.php',
-        data    : $scope.bets,  // pass in data as strings
-        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
-    })

@@ -7,6 +7,7 @@ function AppCtrl($scope) {
 	$scope.version = '1.0';
 	$scope.displayName = 'WebSqlDB';
 	$scope.maxSize = 65535;
+	$scope.host = 'http://192.168.1.175'; //Mikkels ip på Rocket Labs
 
 	$scope.init = function(){
 	
@@ -105,7 +106,7 @@ function AppCtrl($scope) {
 
 	}	
 	
-		/* Syncs with server */
+		/* Syncs with server JQUERY*/
 	$scope.InsertRecordOnServerFunction = function(trips){  // Function for insert Record into SQl Server
 		console.log('InsertRecordOnServerFunction')
 		if($scope.isAllowedToSync == true){	
@@ -170,6 +171,17 @@ function AppCtrl($scope) {
 			tx.executeSql( 'DROP TABLE Bet');
 		})
 	}
+	
+			/* Syncs with server ANGULAR*/
+	$http({method: 'GET', url: '/someUrl'}).
+	  success(function(data, status, headers, config) {
+	    // this callback will be called asynchronously
+	    // when the response is available
+	  }).
+	  error(function(data, status, headers, config) {
+	    // called asynchronously if an error occurs
+	    // or server returns response with an error status.
+  });
 	
 };
 	

@@ -7,7 +7,6 @@ function AppCtrl($scope) {
 	$scope.version = '1.0';
 	$scope.displayName = 'WebSqlDB';
 	$scope.maxSize = 65535;
-	$scope.host = 'http://192.168.1.175'; //Mikkels ip på Rocket Labs
 
 	$scope.init = function(){
 	
@@ -33,6 +32,8 @@ function AppCtrl($scope) {
     // Clear input fields after push
     $scope.bet 	= "";
     $scope.name = "";
+    
+    $scope.PushToServer($scope.bets)
 
 	};
 
@@ -172,16 +173,33 @@ function AppCtrl($scope) {
 		})
 	}
 	
-			/* Syncs with server ANGULAR*/
-	$http({method: 'GET', url: '/someUrl'}).
-	  success(function(data, status, headers, config) {
-	    // this callback will be called asynchronously
-	    // when the response is available
-	  }).
-	  error(function(data, status, headers, config) {
-	    // called asynchronously if an error occurs
-	    // or server returns response with an error status.
-  });
+			/* Add data to server, ANGULAR*/
+	$scope.PushToServer = function($scope){
+		$scope.method = 'POST';
+	  $scope.url = 'http://192.168.1.175:3000';
+		$http({
+			method	: $scope.method, 
+			url			: $scope.url + "/bets",
+			data    : $scope.bets,  // pass in data as strings
+			})
+			.success(function(data, status, headers, config) {
+		    // this callback will be called asynchronously
+		    // when the response is available
+		    console.log("Success")
+		  })
+		  .error(function(data, status, headers, config) {
+		    // called asynchronously if an error occurs
+		    // or server returns response with an error status.
+		    console.log("Error")
+	  });
+  }
 	
 };
 	
+	
+		$http({
+        method  : 'POST',
+        url     : 'process.php',
+        data    : $scope.bets,  // pass in data as strings
+        headers : { 'Content-Type': 'application/x-www-form-urlencoded' }  // set the headers so angular passing info as form data (not request payload)
+    })

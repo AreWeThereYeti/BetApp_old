@@ -28,6 +28,7 @@ function AppCtrl($scope, $http) {
 		console.log("name er " + $scope.bets.name)
 		$scope.AddValuesToDB($scope.bets)
 		console.log("scope.bets er " + $scope.bets)
+		$scope.chechIfBetIsSynced();
 
     
     // Clear input fields after push
@@ -56,26 +57,25 @@ function AppCtrl($scope, $http) {
 			$scope.db = openDatabase($scope.shortName, $scope.version, $scope.displayName, $scope.maxSize);
 		}	
 		// this line will try to create the table User in the database justcreated/openned
-		if(!$scope.db){
 			$scope.db.transaction(function(tx){
 				 
 				// this line actually creates the table User if it does not exist and sets up the three columns and their types
 				// note the UserId column is an auto incrementing column which is useful if you want to pull back distinct rows
 				// easily from the table.
-				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _name varchar, _timestamp int, _comments varchar)', []);
+				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _name varchar, _timestamp int, _comments varchar, _is_synced)', []);
 				
 				},
 				function error(err){alert('error on init local db ' + err)}, function success(){console.log("database created")}
 			) 
-			}
-	}
+		}
+	
 	
 		// this is the function that puts values into the database from page #home
 	$scope.AddValuesToDB = function(bet) {
 		// this is the section that actually inserts the values into the User table
 		$scope.db.transaction(function(transaction) {
 			transaction.executeSql('INSERT INTO Bet(_bet_description, _name) VALUES ("'+bet.bet+'", "'+bet.name+'")');	
-		},function error(err){alert('error on save to local db' + err)}, function success(){});
+		},function error(err){alert('error on save to local db : ' + err.err)}, function success(){});
 		return false;
 	}
 	
@@ -121,11 +121,20 @@ function AppCtrl($scope, $http) {
 		})
 	}
 	
+	$scope.chechIfBetIsSynced = function (){
+		console.log("Pretending to sync")
+		$scope.db.transaction(function(transaction) {
+			transaction.executeSql('UPDATE Bet SET _is_synced = 1)',[]); // Inserted between "set" and "_is_finished" for reference : _end_timestamp ="'+trip.end_timestamp+'", _end_location ="'+trip.end_location+'", _end_address ="'+trip.end_address+'", _end_comments ="'+trip.end_comments+'",
+			},function error(err){console.log('Error setting _is_synced to 1 '); console.log(err)}, function success(){}
+		);
+		return false;
+	}
+	
 			/* Add data to server, ANGULAR*/
 	$scope.PushToServer = function(bet, $http){
 		console.log("$scope.bets json er : " + angular.toJson($scope.bets));
 		$scope.method = 'POST';
-	  $scope.url = 'http://192.168.1.175:3000'; //Change to server address
+	  $scope.url = 'http://betappserver.herokuapp.com'; //Change to server address
 		$http({
 			method	: $scope.method, 
 			url			: $scope.url + "/bets",
@@ -134,7 +143,8 @@ function AppCtrl($scope, $http) {
 			.success(function(data, status, headers, config) {
 		    // this callback will be called asynchronously
 		    // when the response is available
-		    console.log("Success")
+		    console.log("Success!!")
+		    $scope.chechIfBetIsSynced();
 		  })
 		  .error(function(data, status, headers, config) {
 		    // called asynchronously if an error occurs

@@ -56,16 +56,18 @@ function AppCtrl($scope, $http) {
 			$scope.db = openDatabase($scope.shortName, $scope.version, $scope.displayName, $scope.maxSize);
 		}	
 		// this line will try to create the table User in the database justcreated/openned
-		$scope.db.transaction(function(tx){
-			 
-			// this line actually creates the table User if it does not exist and sets up the three columns and their types
-			// note the UserId column is an auto incrementing column which is useful if you want to pull back distinct rows
-			// easily from the table.
-			tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _name varchar, _timestamp int, _comments varchar)', []);
-			
-			},
-			function error(err){alert('error on init local db ' + err)}, function success(){console.log("database created")}
-		) 
+		if(!$scope.db){
+			$scope.db.transaction(function(tx){
+				 
+				// this line actually creates the table User if it does not exist and sets up the three columns and their types
+				// note the UserId column is an auto incrementing column which is useful if you want to pull back distinct rows
+				// easily from the table.
+				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _name varchar, _timestamp int, _comments varchar)', []);
+				
+				},
+				function error(err){alert('error on init local db ' + err)}, function success(){console.log("database created")}
+			) 
+			}
 	}
 	
 		// this is the function that puts values into the database from page #home
@@ -73,7 +75,7 @@ function AppCtrl($scope, $http) {
 		// this is the section that actually inserts the values into the User table
 		$scope.db.transaction(function(transaction) {
 			transaction.executeSql('INSERT INTO Bet(_bet_description, _name) VALUES ("'+bet.bet+'", "'+bet.name+'")');	
-		},function error(err){alert('error on save to local db ' + err)}, function success(){});
+		},function error(err){alert('error on save to local db' + err)}, function success(){});
 		return false;
 	}
 	

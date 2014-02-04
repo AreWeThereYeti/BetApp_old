@@ -17,18 +17,15 @@ function AppCtrl($scope, $http) {
 
 /* 		End of debugging functions */
 		$scope.initializeDB()
-		$scope.pushBetDBToObject()	
+		$scope.pushBetDBToObject()
+		$scope.checkIfBetIsSynced();	
 			
 	}
 
 	$scope.SaveBet = function () {
 		console.log("pushing to server");
-		$scope.PushToServer($scope.bets[$scope.bets.length - 1], $http)
-		console.log("scope.bets[0] er " + angular.toJson($scope.bets[$scope.bets.length - 1]))
-		console.log("name er " + $scope.bets.name)
 		$scope.AddValuesToDB($scope.bets)
-		console.log("scope.bets er " + $scope.bets)
-		$scope.chechIfBetIsSynced();
+		$scope.checkIfBetIsSynced();	
 
     
     // Clear input fields after push
@@ -100,6 +97,33 @@ function AppCtrl($scope, $http) {
 		},function error(err){
 			console.log(err)
 		}, function success(){});
+	}
+	
+		$scope.checkIfBetIsSynced = function (){
+		$scope.betsToPush = [];
+		console.log("Checker om bets er synced");
+		$scope.db.transaction(function (tx){
+			tx.executeSql('SELECT * FROM Bet', [], function (tx, result){	 
+				var dataset = result.rows; 
+				for (var i = 0, item = null; i < dataset.length; i++) {
+					item = dataset.item(i);
+					console.log("item[_is_synced] er : " + item['_is_synced'])
+					if(item['_is_synced'] == null){
+						$scope.$apply(
+							$scope.betsToPush.push({
+								bet: item['_bet_description'],
+								name: item['_name']
+							})
+						);
+						$scope.PushToServer($scope.betsToPush[$scope.betsToPush.length - 1], $http)
+
+						console.log($scope.betsToPush);
+					}	
+				}
+			});
+		},function error(err){
+			console.log(err)
+		}, function success(){});
 
 	}
 
@@ -121,18 +145,17 @@ function AppCtrl($scope, $http) {
 		})
 	}
 	
-	$scope.chechIfBetIsSynced = function (){
-		console.log("Pretending to sync")
+	$scope.setBetToSynced = function (){
 		$scope.db.transaction(function(transaction) {
-			transaction.executeSql('UPDATE Bet SET _is_synced = 1)',[]); // Inserted between "set" and "_is_finished" for reference : _end_timestamp ="'+trip.end_timestamp+'", _end_location ="'+trip.end_location+'", _end_address ="'+trip.end_address+'", _end_comments ="'+trip.end_comments+'",
+			transaction.executeSql('UPDATE Bet SET _is_synced = 1',[]); // Inserted between "set" and "_is_finished" for reference : _end_timestamp ="'+trip.end_timestamp+'", _end_location ="'+trip.end_location+'", _end_address ="'+trip.end_address+'", _end_comments ="'+trip.end_comments+'",
 			},function error(err){console.log('Error setting _is_synced to 1 '); console.log(err)}, function success(){}
 		);
 		return false;
 	}
+		
 	
 			/* Add data to server, ANGULAR*/
 	$scope.PushToServer = function(bet, $http){
-		console.log("$scope.bets json er : " + angular.toJson($scope.bets));
 		$scope.method = 'POST';
 	  $scope.url = 'http://betappserver.herokuapp.com'; //Change to server address
 		$http({
@@ -143,13 +166,32 @@ function AppCtrl($scope, $http) {
 			.success(function(data, status, headers, config) {
 		    // this callback will be called asynchronously
 		    // when the response is available
-		    console.log("Success!!")
-		    $scope.chechIfBetIsSynced();
+		    console.log("Success!!" + status)
+		    if(status == 200){
+			  	$scope.setBetToSynced();
+		    }
 		  })
 		  .error(function(data, status, headers, config) {
 		    // called asynchronously if an error occurs
 		    // or server returns response with an error status.
 		    console.log("Error")
+			console.log("Success!!" + status)
+/*
+				if(!!msg.responseText && !!msg.responseText.err_ids){				
+					if(JSON.parse(msg.responseText).err_ids != 0){	
+						$scope.dropRowsSynced(JSON.parse(msg.responseText).err_ids)
+					}
+				}
+
+				else if(msg.status == 401){
+					$scope.resetAccessToken()
+				}	
+				
+				else if(msg.status == 404){
+					console.log("404 error ")				
+				}
+*/
+		    
 	  });
   }	
 };

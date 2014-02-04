@@ -8,21 +8,20 @@ function AppCtrl($scope, $http) {
 	$scope.displayName = 'WebSqlDB';
 	$scope.maxSize = 65535;
 
-	$scope.init = function(){
-	   console.log("best er" + $scope.bets);
-	   
+	$scope.init = function(){	   
 /* 		debugging function */
 
-	 	$scope.dropTables(); 
+/* 	 	$scope.dropTables();  */
 
 /* 		End of debugging functions */
+		/* Initializing dbs */
 		$scope.initializeDB();
+		/* 		Checking user data */
 		$scope.checkValidation();
 		$scope.pushBetDBToObject();
-		$scope.checkIfBetIsSynced();	
-			
 	}
 
+		/* 	Pressing the button in bet modal */
 	$scope.SaveBet = function () {
 		console.log("button is pressed");
 		$scope.AddValuesToDB($scope.bets)
@@ -81,16 +80,7 @@ function AppCtrl($scope, $http) {
 					}
 				});
 			});	
-		}
-	
-		
-		
-		
-		
-		
-		
-		
-		
+		}		
 	
 		// this is the function that puts values into the database from page #home
 	$scope.AddValuesToDB = function(bet) {

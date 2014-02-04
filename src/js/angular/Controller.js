@@ -13,17 +13,18 @@ function AppCtrl($scope, $http) {
 	   
 /* 		debugging function */
 
-/*  		$scope.dropTables();  */
+/* 	 	$scope.dropTables();  */
 
 /* 		End of debugging functions */
-		$scope.initializeDB()
-		$scope.pushBetDBToObject()
+		$scope.initializeDB();
+		$scope.checkValidation();
+		$scope.pushBetDBToObject();
 		$scope.checkIfBetIsSynced();	
 			
 	}
 
 	$scope.SaveBet = function () {
-		console.log("pushing to server");
+		console.log("button is pressed");
 		$scope.AddValuesToDB($scope.bets)
 		$scope.checkIfBetIsSynced();	
 
@@ -59,11 +60,28 @@ function AppCtrl($scope, $http) {
 				// this line actually creates the table User if it does not exist and sets up the three columns and their types
 				// note the UserId column is an auto incrementing column which is useful if you want to pull back distinct rows
 				// easily from the table.
+				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Auth(email varchar, password varchar)', []);
 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _name varchar, _timestamp int, _comments varchar, _is_synced)', []);
 				
 				},
 				function error(err){alert('error on init local db ' + err)}, function success(){console.log("database created")}
 			) 
+		}
+		$scope.isAccessTokenInDatabase = function(){
+				// initial variables
+			
+			$scope.db.transaction(function (tx){
+				tx.executeSql('SELECT * FROM Auth', [], function (tx, result){  // Fetch records from SQLite
+					var dataset = result.rows; 
+					if (dataset.length == 0 ){
+						$scope.loadAndShowRegistrationPage()
+					}
+					else if(!!dataset.length){
+						$scope.email = dataset.item(0).email;
+						$scope.password = dataset.item(0).password;
+					}
+				});
+			});	
 		}
 	
 	
@@ -136,7 +154,6 @@ function AppCtrl($scope, $http) {
 	
 		db = openDatabase(shortName, version, displayName, maxSize);
 
-
 		db.transaction(function(tx){
 
 			// IMPORTANT FOR DEBUGGING!!!!
@@ -176,7 +193,10 @@ function AppCtrl($scope, $http) {
 		    // or server returns response with an error status.
 		    console.log("Error")
 			console.log("Success!!" + status)
-/*
+			
+			/* Needs to check if something needs to be synced. Server needs to tell app when the bet is synced in order to ensure data.
+			Check below for inspiration
+
 				if(!!msg.responseText && !!msg.responseText.err_ids){				
 					if(JSON.parse(msg.responseText).err_ids != 0){	
 						$scope.dropRowsSynced(JSON.parse(msg.responseText).err_ids)
@@ -190,8 +210,13 @@ function AppCtrl($scope, $http) {
 				else if(msg.status == 404){
 					console.log("404 error ")				
 				}
-*/
+			*/
 		    
 	  });
-  }	
+  }
+  
+  $scope.loadAndShowRegistrationPage = function(){
+	  
+  }
+	
 };

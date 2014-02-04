@@ -41,13 +41,15 @@
 		
 			<!-- bottom new-bet-buttons -->
 		</div>
+		<!--end main content -->
+				<!-- Footer -->
 			<div class="footer push ">
 				<div class="front-buttons footer push text-center">
 					<button type="button" class="btn btn-lg btn-success" id="new-bet-btn" data-toggle="modal" data-target="#new-bet-mod">New Bet</button>
 					<button type="button" class="btn btn-lg btn-warning" id="audio-bet-btn">I'm Drunk</button>
 				</div>
 			</div>
-			
+				<!-- end footer -->
 			<!-- Bootstrap Modal for new-bet-btn -->
 			<div class="modal fade" id="new-bet-mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
@@ -90,11 +92,38 @@
 			    </div><!-- /.modal-content -->
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
-		</div>
+			<!--End Bootstrap Modal for new-bet-btn -->
+			
+			<!-- Modal for user validation-->
+			<div class="modal fade" id="validation_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" id="myModalLabel">Create user</h4>
+			      </div>
+			      <div class="modal-body">
+			        <form role="form">
+							  <div class="form-group">
+							    <label for="exampleInputEmail1">Email address</label>
+							    <input type="email" class="form-control" id="exampleInputEmail1" ng-model="user.mail" placeholder="Enter email" required>
+							  </div>
+							  <div class="form-group">
+							    <label for="exampleInputPassword1">Password</label>
+							    <input type="password" class="form-control" id="exampleInputPassword1" ng-model="user.password" placeholder="Password" required>
+							  </div>
+			        </form>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-lg btn-primary" ng-click="submitToken($event)">Save changes</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<!--End Modal for user validation-->
 
-		<!-- Footer -->
 
-		<!-- end footer -->
+
 <!--   <script type="text/javascript" src="cordova.js"></script> -->
   <script type="text/javascript" src="src/js/jquery-2.0.3.min.js"></script>
   <script type="text/javascript" src="src/js/bootstrap.min.js"></script>

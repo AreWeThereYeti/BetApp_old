@@ -13,7 +13,7 @@ function AppCtrl($scope, $http) {
 	   
 /* 		debugging function */
 
-/* 	 	$scope.dropTables();  */
+	 	$scope.dropTables(); 
 
 /* 		End of debugging functions */
 		$scope.initializeDB();
@@ -28,7 +28,6 @@ function AppCtrl($scope, $http) {
 		$scope.AddValuesToDB($scope.bets)
 		$scope.checkIfBetIsSynced();	
 
-    
     // Clear input fields after push
     $scope.bet 	= "";
     $scope.name = "";
@@ -67,11 +66,11 @@ function AppCtrl($scope, $http) {
 				function error(err){alert('error on init local db ' + err)}, function success(){console.log("database created")}
 			) 
 		}
-		$scope.isAccessTokenInDatabase = function(){
+		$scope.checkValidation = function(){
 				// initial variables
 			
 			$scope.db.transaction(function (tx){
-				tx.executeSql('SELECT * FROM Auth', [], function (tx, result){  // Fetch records from SQLite
+				tx.executeSql('SELECT * FROM Auth', [], function (tx, result){  // Fetch records from WebSQL
 					var dataset = result.rows; 
 					if (dataset.length == 0 ){
 						$scope.loadAndShowRegistrationPage()
@@ -84,6 +83,14 @@ function AppCtrl($scope, $http) {
 			});	
 		}
 	
+		
+		
+		
+		
+		
+		
+		
+		
 	
 		// this is the function that puts values into the database from page #home
 	$scope.AddValuesToDB = function(bet) {
@@ -159,6 +166,8 @@ function AppCtrl($scope, $http) {
 			// IMPORTANT FOR DEBUGGING!!!!
 			// you can uncomment these next twp lines if you want the table Trip and the table Auth to be empty each time the application runs
 			tx.executeSql( 'DROP TABLE Bet');
+			tx.executeSql( 'DROP TABLE Auth');
+
 		})
 	}
 	
@@ -214,9 +223,26 @@ function AppCtrl($scope, $http) {
 		    
 	  });
   }
-  
+/*   Registration */
   $scope.loadAndShowRegistrationPage = function(){
-	  
+	  $('#validation_form').modal('show')
   }
+  
+  $scope.submitToken = function($event){
+		// this is the section that actually inserts the values into the User table
+		console.log('submitting access token')
+		$event.preventDefault();
+		$scope.$root.db.transaction(function(transaction) {
+			transaction.executeSql('INSERT INTO AUTH (email, password) VALUES ("'+$scope.user.mail+'", "'+$scope.user.password+'")',[]);
+			},function error(err){
+				alert("Ups, noget gik galt. Prøv venligst igen")
+				console.log(err)
+			}, function success(){
+			$('#validation_form').modal('hide');
+			}
+		);
+		
+		return false;
+	}
 	
 };

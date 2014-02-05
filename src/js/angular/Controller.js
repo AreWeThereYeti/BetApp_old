@@ -114,7 +114,7 @@ function AppCtrl($scope, $http) {
 		}, function success(){});
 	}
 	
-		$scope.checkIfBetIsSynced = function (){
+	$scope.checkIfBetIsSynced = function (){
 		$scope.betsToPush = [];
 		console.log("Checker om bets er synced");
 		$scope.db.transaction(function (tx){
@@ -173,43 +173,43 @@ function AppCtrl($scope, $http) {
 			/* Add data to server, ANGULAR*/
 	$scope.PushToServer = function(bet, $http){
 		$scope.method = 'POST';
-	  $scope.url = 'http://betappserver.herokuapp.com'; //Change to server address
+		$scope.url = 'http://betappserver.herokuapp.com'; //Change to server address
 		$http({
-			method	: $scope.method, 
-			url			: $scope.url + "/bets",
-			data    : angular.toJson(bet),  
+				method	: $scope.method, 
+				url			: $scope.url + "/bets",
+				data    : angular.toJson(bet),  
 			})
 			.success(function(data, status, headers, config) {
-		    // this callback will be called asynchronously
-		    // when the response is available
-		    console.log("Success!!" + status)
-		    if(status == 200){
-			  	$scope.setBetToSynced();
+			    // this callback will be called asynchronously
+			    // when the response is available
+			    console.log("Success!!" + status)
+			    if(status == 200){
+				  	$scope.setBetToSynced();
 		    }
 		  })
 		  .error(function(data, status, headers, config) {
-		    // called asynchronously if an error occurs
-		    // or server returns response with an error status.
-		    console.log("Error")
-			console.log("Success!!" + status)
-			
-			/* Needs to check if something needs to be synced. Server needs to tell app when the bet is synced in order to ensure data.
-			Check below for inspiration
-
-				if(!!msg.responseText && !!msg.responseText.err_ids){				
-					if(JSON.parse(msg.responseText).err_ids != 0){	
-						$scope.dropRowsSynced(JSON.parse(msg.responseText).err_ids)
-					}
-				}
-
-				else if(msg.status == 401){
-					$scope.resetAccessToken()
-				}	
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			    console.log("Error")
+				console.log("Success!!" + status)
 				
-				else if(msg.status == 404){
-					console.log("404 error ")				
-				}
-			*/
+				/* Needs to check if something needs to be synced. Server needs to tell app when the bet is synced in order to ensure data.
+				Check below for inspiration
+	
+					if(!!msg.responseText && !!msg.responseText.err_ids){				
+						if(JSON.parse(msg.responseText).err_ids != 0){	
+							$scope.dropRowsSynced(JSON.parse(msg.responseText).err_ids)
+						}
+					}
+	
+					else if(msg.status == 401){
+						$scope.resetAccessToken()
+					}	
+					
+					else if(msg.status == 404){
+						console.log("404 error ")				
+					}
+				*/
 		    
 	  });
   }

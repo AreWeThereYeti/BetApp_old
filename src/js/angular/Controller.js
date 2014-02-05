@@ -17,6 +17,7 @@ function AppCtrl($scope, $http) {
 		/* Initializing dbs */
 		$scope.initializeDB();
 		/* 		Checking user data */
+		
 		$scope.checkValidation();
 		$scope.pushBetDBToObject();
 	}
@@ -30,7 +31,6 @@ function AppCtrl($scope, $http) {
     // Clear input fields after push
     $scope.bet 	= "";
     $scope.name = "";
-    
 	};
 
 	/* --------------  Database ---------------- */	 	
@@ -157,7 +157,6 @@ function AppCtrl($scope, $http) {
 			// you can uncomment these next twp lines if you want the table Trip and the table Auth to be empty each time the application runs
 			tx.executeSql( 'DROP TABLE Bet');
 			tx.executeSql( 'DROP TABLE Auth');
-
 		})
 	}
 	

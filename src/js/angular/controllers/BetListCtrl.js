@@ -1,6 +1,6 @@
 /* var betApp = angular.module('betApp', []); */
  
-betApp.controller('BetListCtrl', function ($scope) {
+betApp.controller('BetListCtrl', function ($scope, $http) {
   
 
 });

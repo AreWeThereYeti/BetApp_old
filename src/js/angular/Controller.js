@@ -7,6 +7,8 @@ function AppCtrl($scope, $http) {
 	$scope.version = '1.0';
 	$scope.displayName = 'WebSqlDB';
 	$scope.maxSize = 65535;
+	$scope.selectedBet;
+	
 
 	$scope.init = function(){	   
 /* 		debugging function */
@@ -20,6 +22,20 @@ function AppCtrl($scope, $http) {
 		$scope.checkValidation();
 		$scope.pushBetDBToObject();
 	}
+	
+	/* selecting a bet from your bet list */
+	
+	$scope.setSelected = function(bet){
+		$scope.selectedBet = bet;
+	};
+
+	$scope.isSelectedBet = function(bet){
+		if($scope.selectedBet){
+			return $scope.selectedBet===bet;
+		}
+	};
+
+
 
 		/* 	Pressing the button in bet modal */
 	$scope.SaveBet = function () {

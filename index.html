@@ -30,7 +30,7 @@
 	          </tr>
 	        </thead>
 	        <tbody>
-	          <tr ng-repeat="item in bets">
+	          <tr ng-repeat="item in bets" ng-click="setSelected(item)" ng-class="{selected: isSelectedBet(item)}" data-toggle="modal" data-target="#inspectedBet">
 	            <td> {{item.bet}}</td>
 	            <td>{{item.name}}</td>
 	          </tr>
@@ -131,6 +131,25 @@
 			  </div>
 			</div>
 			<!--End Modal for user validation-->
+
+			<!-- Modal for displaying bet from list-->
+			<div class="modal fade" id="inspectedBet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" id="myModalLabel">Show Bet</h4>
+			      </div>
+			      <div class="modal-body">
+			        
+			      </div>
+			      <div class="modal-footer">
+
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<!--End Modal for displaying bet from list-->
 
 
 

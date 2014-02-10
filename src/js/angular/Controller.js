@@ -32,6 +32,15 @@ function AppCtrl($scope, $http) {
     $scope.name = "";
     
 	};
+	
+	$scope.cancelBet = function () {
+		console.log("close-button is pressed");	
+    // Clear input fields after push
+	    $scope.bets.bet = "";
+	    $scope.bets.name = "";
+    
+	};
+	
 
 	/* --------------  Database ---------------- */	 	
 	/* 		Initialize database */

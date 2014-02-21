@@ -13,7 +13,7 @@ function AppCtrl($scope, $http) {
 	$scope.init = function(){	   
 /* 		debugging function */
 
-/* 	 	$scope.dropTables();  */
+ 	 	/* $scope.dropTables();   */
 
 /* 		End of debugging functions */
 		/* Initializing dbs */
@@ -84,12 +84,13 @@ function AppCtrl($scope, $http) {
 				// note the UserId column is an auto incrementing column which is useful if you want to pull back distinct rows
 				// easily from the table.
 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Auth(email varchar, password varchar)', []);
-				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _name varchar, _timestamp int, _comments varchar, _is_synced)', []);
+				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _participant varchar, _timestamp int, _comments varchar, _is_synced, _author varchar)', []);
 				
 				},
 				function error(err){alert('error on init local db ' + err)}, function success(){console.log("database created")}
 			) 
 		}
+		
 		$scope.checkValidation = function(){
 				// initial variables
 			
@@ -111,7 +112,7 @@ function AppCtrl($scope, $http) {
 	$scope.AddValuesToDB = function(bet) {
 		// this is the section that actually inserts the values into the User table
 		$scope.db.transaction(function(transaction) {
-			transaction.executeSql('INSERT INTO Bet(_bet_description, _name) VALUES ("'+bet.bet+'", "'+bet.name+'")');	
+			transaction.executeSql('INSERT INTO Bet(_bet_description, _participant) VALUES ("'+bet.bet+'", "'+bet.name+'")');	
 		},function error(err){alert('error on save to local db : ' + err.err)}, function success(){});
 		return false;
 	}
@@ -129,7 +130,7 @@ function AppCtrl($scope, $http) {
 					$scope.$apply(
 						$scope.bets.push({
 							bet: item['_bet_description'],
-							name: item['_name']
+							name: item['_participant']
 						})
 					);
 				}
@@ -152,7 +153,8 @@ function AppCtrl($scope, $http) {
 						$scope.$apply(
 							$scope.betsToPush.push({
 								bet: item['_bet_description'],
-								name: item['_name']
+								name: item['_participant']
+/* 								author: request user from auth table */
 							})
 						);
 						$scope.PushToServer($scope.betsToPush[$scope.betsToPush.length - 1], $http)
@@ -201,7 +203,7 @@ function AppCtrl($scope, $http) {
 		$scope.url = 'http://betappserver.herokuapp.com'; //Change to server address
 		$http({
 				method	: $scope.method, 
-				url			: $scope.url + "/bets",
+				url		: $scope.url + "/bets",
 				data    : angular.toJson(bet),  
 			})
 			.success(function(data, status, headers, config) {
@@ -210,13 +212,13 @@ function AppCtrl($scope, $http) {
 			    console.log("Success!!" + status)
 			    if(status == 200){
 				  	$scope.setBetToSynced();
-		    }
-		  })
-		  .error(function(data, status, headers, config) {
+				}
+			})
+		    .error(function(data, status, headers, config) {
 			    // called asynchronously if an error occurs
 			    // or server returns response with an error status.
-			    console.log("Error")
-				console.log("Success!!" + status)
+			    console.log("Error on PushToServer: " + status)
+				
 				
 				/* Needs to check if something needs to be synced. Server needs to tell app when the bet is synced in order to ensure data.
 				Check below for inspiration
@@ -236,8 +238,8 @@ function AppCtrl($scope, $http) {
 					}
 				*/
 		    
-	  });
-  }
+			});
+	}
 /*   Registration */
   $scope.loadAndShowRegistrationPage = function(){
 	  $('#validation_form').modal('show')

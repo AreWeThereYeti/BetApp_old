@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="src/css/index.css" />
     <script type="text/javascript" src="src/js/angular.min.js"></script>
 
-    <title>Hello World</title>
+    <title>BetBox</title>
   </head>
   
   <body ng-controller='AppCtrl'>
@@ -37,7 +37,6 @@
 	        </tbody>
 	      </table>
 	      <p>Total number of bets: {{bets.length}}</p>
-	      <h2 class="text-center">Angular test : 1 + 2 = {{ 1 + 2 }}</h2>
 		
 			<!-- bottom new-bet-buttons -->
 		</div>
@@ -50,6 +49,9 @@
 				</div>
 			</div>
 				<!-- end footer -->
+				
+
+<!-- -------------------------------------------------------------- -->				
 			<!-- Bootstrap Modal for new-bet-btn -->
 			<div class="modal fade" id="new-bet-mod" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
@@ -100,7 +102,9 @@
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
 			<!--End Bootstrap Modal for new-bet-btn -->
-			
+
+
+<!-- -------------------------------------------------------------- -->			
 			<!-- Modal for user validation-->
 			<div class="modal fade" id="validation_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
@@ -131,6 +135,8 @@
 			  </div>
 			</div>
 			<!--End Modal for user validation-->
+
+<!-- -------------------------------------------------------------- -->
 
 			<!-- Modal for displaying bet from list-->
 			<div class="modal fade" id="inspectedBet" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -20,7 +20,16 @@ function AppCtrl($scope, $http) {
 		$scope.initializeDB();
 		/* 		Checking user data */
 		$scope.checkValidation();
+
+/* 		check server for new bets 
+			use checkIfBetIsSynced() --> to check if there are unsynced bets from last login, if then upload them...
+			check if there are new bets for this user (in relation to checkValidation information (email, pass) ) either where this user is the author (in the case of login on new device) or participant (in the case where other users have made a bet with this one.).
+			Only push "confirmed" bets to betlist.  
+	
+*/
+		
 		$scope.pushBetDBToObject();
+
 	}
 	
 	/* selecting a bet from your bet list */
@@ -103,6 +112,9 @@ function AppCtrl($scope, $http) {
 					else if(!!dataset.length){
 						$scope.email = dataset.item(0).email;
 						$scope.password = dataset.item(0).password;
+						console.log("currentUser is: "+ $scope.email);
+	
+
 					}
 				});
 			});	
@@ -119,7 +131,6 @@ function AppCtrl($scope, $http) {
 	
 	$scope.pushBetDBToObject = function (){
 		$scope.bets = [];
-		console.log("bets er" + $scope.bets);
 		$scope.db.transaction(function (tx){
 			tx.executeSql('SELECT * FROM Bet', [], function (tx, result){	 
 				var dataset = result.rows; 

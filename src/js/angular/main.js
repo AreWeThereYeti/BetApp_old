@@ -1,7 +1,8 @@
 
+var betApp = angular.module('betApp', []);	
 
-/* User controller with angularjs */
-function AppCtrl($scope, $http) {
+
+betApp.controller('AppCtrl', function($scope, $http) {
 
 	$scope.shortName = 'WebSqlDB';
 	$scope.version = '1.0';
@@ -273,4 +274,43 @@ function AppCtrl($scope, $http) {
 		return false;
 	}
 	
-};
+});
+
+betApp.controller('BetListCtrl', function ($scope, $http) {
+  
+
+});
+
+
+/* --------   Directives ---------- */
+
+betApp.directive('ngApp', function() {
+	    return {
+	    controller: 'AppCtrl',
+	    link:function(scope,element,attrs){
+			scope.init();
+			}
+		}
+});
+
+/* --------   Services ---------- */
+
+
+betApp.service('betService'['$http', function($http){
+	
+	var	getAllBets = function(){
+		
+		return $http({
+			method: 'GET',
+			URL: 'http://betappserver.herokuapp.com/bets'	/* should probably not display the full URL, but instead hide it in variables */
+		})
+	};
+	
+	var pushBetsToServer = function(){};
+	
+	return{
+		getAllBets: getAllBets,
+		pushBetsToServer: pushBetsToServer
+	};
+	
+}]);

@@ -2,7 +2,7 @@
 var betApp = angular.module('betApp', []);	
 
 
-betApp.controller('AppCtrl', function($scope, $http) {
+betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betService) {
 
 	$scope.shortName = 'WebSqlDB';
 	$scope.version = '1.0';
@@ -14,7 +14,7 @@ betApp.controller('AppCtrl', function($scope, $http) {
 	$scope.init = function(){	   
 /* 		debugging function */
 
- 	 	/* $scope.dropTables();   */
+ 	 	$scope.dropTables();   
 
 /* 		End of debugging functions */
 		/* Initializing dbs */
@@ -164,12 +164,13 @@ betApp.controller('AppCtrl', function($scope, $http) {
 					if(item['_is_synced'] == null){
 						$scope.$apply(
 							$scope.betsToPush.push({
+								id: item['Id'],
 								bet: item['_bet_description'],
 								name: item['_participant']
 /* 								author: request user from auth table */
 							})
 						);
-						$scope.PushToServer($scope.betsToPush[$scope.betsToPush.length - 1], $http)
+						$scope.PushToServer($scope.betsToPush[$scope.betsToPush.length - 1])
 
 						console.log($scope.betsToPush);
 					}	
@@ -200,9 +201,10 @@ betApp.controller('AppCtrl', function($scope, $http) {
 		})
 	}
 	
-	$scope.setBetToSynced = function (){
+	$scope.setBetToSynced = function (bet){
 		$scope.db.transaction(function(transaction) {
-			transaction.executeSql('UPDATE Bet SET _is_synced = 1',[]); // Inserted between "set" and "_is_finished" for reference : _end_timestamp ="'+trip.end_timestamp+'", _end_location ="'+trip.end_location+'", _end_address ="'+trip.end_address+'", _end_comments ="'+trip.end_comments+'",
+			console.log('trying to set _is_synced to 1 for' + bet.id );
+			transaction.executeSql('UPDATE Bet SET _is_synced = 1 WHERE Id = '+ bet.id,[]); // Inserted between "set" and "_is_finished" for reference : _end_timestamp ="'+trip.end_timestamp+'", _end_location ="'+trip.end_location+'", _end_address ="'+trip.end_address+'", _end_comments ="'+trip.end_comments+'",
 			},function error(err){console.log('Error setting _is_synced to 1 '); console.log(err)}, function success(){}
 		);
 		return false;
@@ -210,26 +212,30 @@ betApp.controller('AppCtrl', function($scope, $http) {
 		
 	
 			/* Add data to server, ANGULAR*/
-	$scope.PushToServer = function(bet, $http){
-		$scope.method = 'POST';
+	$scope.PushToServer = function(bet){
+		/*
+$scope.method = 'POST';
 		$scope.url = 'http://betappserver.herokuapp.com'; //Change to server address
 		$http({
 				method	: $scope.method, 
 				url		: $scope.url + "/bets",
 				data    : angular.toJson(bet),  
 			})
-			.success(function(data, status, headers, config) {
+*/
+			betService.pushBetsToServer(bet)
+			.then(function(status) {
 			    // this callback will be called asynchronously
 			    // when the response is available
-			    console.log("Success!!" + status)
+			    console.log("Success!!" + status);
 			    if(status == 200){
-				  	$scope.setBetToSynced();
+			    	console.log("IDDDD!!" + bet.id);
+
+				  	$scope.setBetToSynced(bet);
 				}
-			})
-		    .error(function(data, status, headers, config) {
+			}, function(err) {
 			    // called asynchronously if an error occurs
 			    // or server returns response with an error status.
-			    console.log("Error on PushToServer: " + status)
+			    console.log("Error on PushToServer: ");
 				
 				
 				/* Needs to check if something needs to be synced. Server needs to tell app when the bet is synced in order to ensure data.
@@ -274,7 +280,7 @@ betApp.controller('AppCtrl', function($scope, $http) {
 		return false;
 	}
 	
-});
+}]);
 
 betApp.controller('BetListCtrl', function ($scope, $http) {
   
@@ -296,17 +302,33 @@ betApp.directive('ngApp', function() {
 /* --------   Services ---------- */
 
 
-betApp.service('betService'['$http', function($http){
+betApp.service('betService', ['$http', '$q', function($http, $q){
+	
+	var serverURL = 'http://betappserver.herokuapp.com';
 	
 	var	getAllBets = function(){
 		
 		return $http({
 			method: 'GET',
-			URL: 'http://betappserver.herokuapp.com/bets'	/* should probably not display the full URL, but instead hide it in variables */
+			url: serverURL + '/bets'	/* should probably not display the full URL, but instead hide it in variables */
+		
 		})
 	};
 	
-	var pushBetsToServer = function(){};
+	var pushBetsToServer = function(bet){
+		
+		var d = $q.defer();
+		$http({
+				method	: 'POST', 
+				url		: serverURL + '/bets',
+				data    : angular.toJson(bet)  
+		}).success(function(data, status, headers){
+			d.resolve(status);
+		}).error(function(data, status, headers){
+			d.reject(status);
+		});
+		return d.promise;
+	};
 	
 	return{
 		getAllBets: getAllBets,

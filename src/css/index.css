@@ -40,6 +40,8 @@ padding: 5px;
 }
 
 
+
+
 /*	form validation test lir */
 #new-bet-content.ng-invalid.ng-dirty  {border: 1px solid red;}
 #bet-participants.ng-invalid.ng-dirty  {border: 1px solid red;}

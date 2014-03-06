@@ -18,6 +18,7 @@ font-size: 12px;
 text-align: center;
 }
 
+
 .modal-header, .modal-footer {
 padding: 5px;
 }
@@ -39,7 +40,13 @@ padding: 5px;
     margin: 0 auto -60px; /* the bottom margin is the negative value of the footer's height */
 }
 
-
+td {
+    white-space: nowrap;
+    overflow: hidden;
+    }
+table{
+    table-layout:fixed; 
+    }
 
 
 /*	form validation test lir */

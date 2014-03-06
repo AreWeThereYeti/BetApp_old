@@ -14,13 +14,14 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 	$scope.init = function(){	   
 /* 		debugging function */
 
- 	 	$scope.dropTables();   
+/*  	 	$scope.dropTables();    */
 
 /* 		End of debugging functions */
 		/* Initializing dbs */
 		$scope.initializeDB();
 		/* 		Checking user data */
 		$scope.checkValidation();
+		$scope.checkIfBetIsSynced();	//
 
 /* 		check server for new bets 
 			use checkIfBetIsSynced() --> to check if there are unsynced bets from last login, if then upload them...
@@ -50,7 +51,8 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 		/* 	Pressing the button in bet modal */
 	$scope.SaveBet = function () {
 		console.log("button is pressed");
-		$scope.AddValuesToDB($scope.bets)
+		$scope.AddValuesToDB($scope.bets); // HVAD FANNDEN BLIVER SKUBBET TIL DB HER???
+
 		$scope.checkIfBetIsSynced();	
 
     // Clear input fields after push
@@ -126,7 +128,14 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 		// this is the section that actually inserts the values into the User table
 		$scope.db.transaction(function(transaction) {
 			transaction.executeSql('INSERT INTO Bet(_bet_description, _participant) VALUES ("'+bet.bet+'", "'+bet.name+'")');	
-		},function error(err){alert('error on save to local db : ' + err.err)}, function success(){});
+		},function error(err){alert('error on save to local db : ' + err.err)}, function success(){				
+			$scope.$apply(
+						$scope.bets.push({
+							bet: bet.bet,
+							name: bet.name
+						})
+					);
+			});
 		return false;
 	}
 	
@@ -282,19 +291,43 @@ $scope.method = 'POST';
 	
 }]);
 
-betApp.controller('BetListCtrl', function ($scope, $http) {
+betApp.controller('BetListCtrl', ['$scope', '$element', '$attrs','$transclude', function ($scope, $element, $attrs, $transclude) {
   
+  $scope.handleClick = function(){
+	  $scope.action({selectedBet: $scope.bet});
 
-});
+  };
+
+}]);
 
 
 /* --------   Directives ---------- */
 
 betApp.directive('ngApp', function() {
 	    return {
+
 	    controller: 'AppCtrl',
 	    link:function(scope,element,attrs){
 			scope.init();
+			}
+		}
+});
+
+betApp.directive('betList', function() {
+	    return {
+	    restrict: 'EA',
+	    replace: false,
+	    scope:{
+			action: '&', // is not being used right now...
+			bet: '=',     
+			bets: '='    
+			},
+/* 	    template: '<tr class="betList" ng-click="handleClick()"><td> {{bet.bet}}</td><td>{{bet.name}}</td></tr>', */
+	    templateUrl: 'src/templates/betList.html',
+	    controller: 'BetListCtrl',
+	    link:function(scope,element,attrs){
+
+			/* watch function on bets object (containing all bets)*/
 			}
 		}
 });

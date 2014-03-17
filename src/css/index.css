@@ -48,6 +48,15 @@ table{
     table-layout:fixed; 
     }
 
+.show-bet-content{
+	margin-top: 20px;
+	
+}
+
+.show-bet-participants{
+
+	margin-top: 20px;
+}
 
 /*	form validation test lir */
 #new-bet-content.ng-invalid.ng-dirty  {border: 1px solid red;}

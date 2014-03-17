@@ -38,6 +38,8 @@
 	        </tbody>
 	      </table>
 	      <p>Total number of bets: {{bets.length}}</p>
+	      <p>user: {{email}}</p>
+
 			<!-- bottom new-bet-buttons -->
 		</div>
 		<!--end main content -->
@@ -144,14 +146,15 @@
 			    <div class="modal-content">
 			      <div class="modal-header">
 			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title" id="myModalLabel">Show Bet</h4>
+			        <h4 class="modal-title text-center" id="myModalLabel">Selected Bet</h4>
 			      </div>
-			      <div class="modal-body">
+			      <div class="modal-body">			      
 			      	<div class="show-bet-content">{{selectedBet.bet}}</div>
-			      	<div class="show-bet-participants">{{selectedBet.name}}</div>			      	  
+			      	<div class="show-bet-participants text-center"><strong>Bet Made with:</strong>  {{selectedBet.name}}</div>			      	  
 			      </div>
 			      <div class="modal-footer">
-
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Edit Bet</button>
+			        <button type="button"  class="btn btn-alert" data-dismiss="modal">Delete Bet</button>
 			      </div>
 			    </div>
 			  </div>

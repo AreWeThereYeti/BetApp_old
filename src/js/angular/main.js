@@ -96,7 +96,10 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 				// note the UserId column is an auto incrementing column which is useful if you want to pull back distinct rows
 				// easily from the table.
 				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Auth(email varchar, password varchar)', []);
-				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _participant varchar, _timestamp int, _comments varchar, _is_synced, _author varchar)', []);
+				
+				// logout should remove user from database after pushing all bets to the server, and give an error/"are you sure" message if all bet have not been pushed
+				
+				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Bet(Id INTEGER PRIMARY KEY AUTOINCREMENT, _bet_description varchar, _participant varchar, _timestamp int, _comments varchar, _is_synced, _author varchar, _id varchar)', []);
 				
 				},
 				function error(err){alert('error on init local db ' + err)}, function success(){console.log("database created")}
@@ -114,10 +117,23 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 					}
 					else if(!!dataset.length){
 						$scope.email = dataset.item(0).email;
-						$scope.password = dataset.item(0).password;
+						$scope.password = dataset.item(0).password; 
 						console.log("currentUser is: "+ $scope.email);
-	
+						// query server for bets belonging to User (author==$scope.email) and (participant==$scope.email)
+						// push all received bets to local DB where bet id(unique identifier)!=id of bets in the local dbd   
+/*
+						var data;
+						tx.executeSql('SELECT * FROM Bet', [], function (tx, result){  // Fetch records from WebSQL
+							data = result.rows;
+							for (var i = 0, item = null; i < dataset.length; i++) {
 
+								item = dataset.item(i);
+
+								tx.executeSql('INSERT INTO Bet(_bet_description, _participant, _author, _id) VALUES ("'+bet.bet+'", "'+bet.name+'","'+$scope.email+'", "'+item['_id']+'") WHERE');
+								}
+							}); 
+*/
+							
 					}
 				});
 			});	
@@ -125,14 +141,17 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 	
 		// this is the function that puts values into the database from page #home
 	$scope.AddValuesToDB = function(bet) {
+		
+		
 		// this is the section that actually inserts the values into the User table
 		$scope.db.transaction(function(transaction) {
-			transaction.executeSql('INSERT INTO Bet(_bet_description, _participant) VALUES ("'+bet.bet+'", "'+bet.name+'")');	
+			transaction.executeSql('INSERT INTO Bet(_bet_description, _participant, _author) VALUES ("'+bet.bet+'", "'+bet.name+'","'+$scope.email+'")');	
 		},function error(err){alert('error on save to local db : ' + err.err)}, function success(){				
 			$scope.$apply(
 						$scope.bets.push({
 							bet: bet.bet,
 							name: bet.name
+							
 						})
 					);
 			});
@@ -151,7 +170,9 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 					$scope.$apply(
 						$scope.bets.push({
 							bet: item['_bet_description'],
-							name: item['_participant']
+							name: item['_participant'],
+							user: item['_author'],
+
 						})
 					);
 				}
@@ -175,8 +196,8 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 							$scope.betsToPush.push({
 								id: item['Id'],
 								bet: item['_bet_description'],
-								name: item['_participant']
-/* 								author: request user from auth table */
+								name: item['_participant'],
+								author: item['_author']
 							})
 						);
 						$scope.PushToServer($scope.betsToPush[$scope.betsToPush.length - 1])

@@ -95,7 +95,7 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 				// this line actually creates the table User if it does not exist and sets up the three columns and their types
 				// note the UserId column is an auto incrementing column which is useful if you want to pull back distinct rows
 				// easily from the table.
-				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Auth(email varchar, password varchar)', []);
+				tx.executeSql( 'CREATE TABLE IF NOT EXISTS Auth(email varchar, password varchar, token varchar)', []);
 				
 				// logout should remove user from database after pushing all bets to the server, and give an error/"are you sure" message if all bet have not been pushed
 				
@@ -113,12 +113,13 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 				tx.executeSql('SELECT * FROM Auth', [], function (tx, result){  // Fetch records from WebSQL
 					var dataset = result.rows; 
 					if (dataset.length == 0 ){
-						$scope.loadAndShowRegistrationPage()
+						$scope.loadAndShowLoginPage();
 					}
 					else if(!!dataset.length){
-						$scope.email = dataset.item(0).email;
+						$scope.email = dataset.item(0).email
 						$scope.password = dataset.item(0).password; 
 						console.log("currentUser is: "+ $scope.email);
+						$scope.$apply();
 						// query server for bets belonging to User (author==$scope.email) and (participant==$scope.email)
 						// push all received bets to local DB where bet id(unique identifier)!=id of bets in the local dbd   
 /*
@@ -134,6 +135,7 @@ betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betServic
 							}); 
 */
 							
+						
 					}
 				});
 			});	
@@ -290,26 +292,97 @@ $scope.method = 'POST';
 	}
 /*   Registration */
   $scope.loadAndShowRegistrationPage = function(){
-	  $('#validation_form').modal('show')
+
+  	if($('#validation_form').is(":visible")){
+  	  $('#validation_form').modal('hide');
+  	}
+	$('#new_user_form').modal('show');
+  }
+
+  $scope.loadAndShowLoginPage = function(){
+    if($('#new_user_form').is(":visible")){
+	  $('#new_user_form').modal('hide');
+  	}
+	  $('#validation_form').modal('show');
+
   }
   
-  $scope.submitToken = function($event){
-		// this is the section that actually inserts the values into the User table
-		console.log('submitting access token')
-		$event.preventDefault();
-		$scope.$root.db.transaction(function(transaction) {
-			transaction.executeSql('INSERT INTO AUTH (email, password) VALUES ("'+$scope.user.mail+'", "'+$scope.user.password+'")',[]);
-			},function error(err){
+  $scope.registerUser = function(){
+	
+	console.log('registering new user: '+$scope.user.mail);
+	
+	betService.pushUserToServer($scope.user)
+			.then(function(status) {
+			    // this callback will be called asynchronously
+			    // when the response is available
+			    console.log("Success!!" + status);
+			    if(status == 200){
+			    	console.log("user is uploaded, storring loacally");
+				  	$scope.$root.db.transaction(function(transaction) {
+					  		transaction.executeSql('INSERT INTO AUTH (email, password) VALUES ("'+$scope.user.mail+'", "'+$scope.user.password+'")',[]);
+					  	},function error(err){
+						  	alert("Ups, noget gik galt. Prøv venligst igen")
+						  	console.log(err)
+						}, function success(){
+							$('#new_user_form').modal('hide');
+							$('#validation_form').modal('hide');
+							$scope.checkValidation();
+
+						}
+					);
+				}
+			}, function(err) {
+			    // called asynchronously if an error occurs
+			    // or server returns response with an error status.
+			    console.log("Error on PushToServer: ");
+			});	
+			
+  }
+  
+  $scope.logoutUser = function(){
+	console.log('logging out user: '+ $scope.email);
+	$scope.$root.db.transaction(function(transaction) {
+			$scope.dropTables(); 
+		},function error(err){
 				alert("Ups, noget gik galt. Prøv venligst igen")
 				console.log(err)
-			}, function success(){
-			$('#validation_form').modal('hide');
-			}
-		);
+		}, function success(){
+			$('#logOut').modal('hide');
+			$scope.init();
+			
+		}
+	);	  
+  }
+    
+  $scope.submitToken = function(){
+		// this is the section that actually inserts the values into the User table
+		console.log('submitting access token');
 		
-		return false;
+		betService.checkUserWithServer($scope.user)
+			.then(function(data) {
+			    // this callback will be called asynchronously
+			    // when the response is available
+			    console.log("Success!!" + data.token + " data: ");
+			    	console.log("user is uploaded, storring loacally");
+
+					// ADD DB QUERY: CHECK IF 'user' (user.email&user.password) matches a user in the DB 'auth' table. if yes then generate and return token.
+					
+					$scope.$root.db.transaction(function(transaction) {
+						transaction.executeSql('INSERT INTO AUTH (email, password, token) VALUES ("'+$scope.user.mail+'", "'+$scope.user.password+'","'+data.token+'" )',[]);
+						},function error(err){
+							alert("Ups, noget gik galt. Prøv venligst igen")
+							console.log(err)
+						}, function success(){
+							$('#new_user_form').modal('hide');
+							$('#validation_form').modal('hide');
+							$scope.checkValidation();
+
+						}
+					);
+				
+			})
+		
 	}
-	
 }]);
 
 betApp.controller('BetListCtrl', ['$scope', '$element', '$attrs','$transclude', function ($scope, $element, $attrs, $transclude) {
@@ -358,13 +431,13 @@ betApp.directive('betList', function() {
 
 betApp.service('betService', ['$http', '$q', function($http, $q){
 	
-	var serverURL = 'http://betappserver.herokuapp.com';
+	var serverURL = 'http://localhost:3000'/* 'http://betappserver.herokuapp.com' */; //on localhost while developing!!!!
 	
 	var	getAllBets = function(){
 		
 		return $http({
 			method: 'GET',
-			url: serverURL + '/bets'	/* should probably not display the full URL, but instead hide it in variables */
+			url: serverURL + '/bets'	
 		
 		})
 	};
@@ -384,9 +457,42 @@ betApp.service('betService', ['$http', '$q', function($http, $q){
 		return d.promise;
 	};
 	
-	return{
-		getAllBets: getAllBets,
-		pushBetsToServer: pushBetsToServer
+	var checkUserWithServer = function(user){
+		
+		var d = $q.defer();
+		$http({
+				method	: 'POST', 
+				url		: serverURL + '/auth',
+				data    : angular.toJson(user)  
+		}).success(function(data, status, headers){
+			d.resolve(data);
+		}).error(function(data, status, headers){
+			d.reject(status);
+		});
+		return d.promise;
 	};
 	
+	var pushUserToServer = function(user){
+		
+		var d = $q.defer();
+		$http({
+				method	: 'POST', 
+				url		: serverURL + '/auth/new',
+				data    : angular.toJson(user)  
+		}).success(function(data, status, headers){
+			d.resolve(status);
+			
+		}).error(function(data, status, headers){
+			d.reject(status);
+		});
+		return d.promise;
+	};
+	
+	return{
+		getAllBets: getAllBets,
+		pushBetsToServer: pushBetsToServer,
+		pushUserToServer: pushUserToServer,
+		checkUserWithServer: checkUserWithServer
+	};
+
 }]);

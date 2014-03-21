@@ -20,6 +20,7 @@
   
 		<!--Main content -->
 		<div class="container">
+			<button type="button" class="close" data-toggle="modal" data-target="#logOut" aria-hidden="true">&times;</button>
 
 			<h1 class="text-center">BetApp</h1>
 			
@@ -107,13 +108,16 @@
 
 
 <!-- -------------------------------------------------------------- -->			
-			<!-- Modal for user validation-->
+
+
+			<!-- Modal for adding new user -->
+			
 			<div class="modal fade" id="validation_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			  <div class="modal-dialog">
 			    <div class="modal-content">
 			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title" id="myModalLabel">Create user</h4>
+<!-- 			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
+			        <h4 class="modal-title" id="myModalLabel">User Login</h4>
 			      </div>
 			      <div class="modal-body">
 			        <form role="form" name="authForm" >
@@ -131,12 +135,67 @@
 			        </form>
 			      </div>
 			      <div class="modal-footer">
-			        <button type="button" class="btn btn-lg btn-primary" ng-disabled="authForm.$invalid" ng-click="submitToken($event)">Save changes</button>
+			        <button type="button" class="btn btn-lg btn-secondary" ng-click="loadAndShowRegistrationPage()">New User</button>
+			        <button type="button" class="btn btn-lg btn-primary" ng-disabled="authForm.$invalid" ng-click="submitToken($event)">Login</button>
 			      </div>
 			    </div>
 			  </div>
 			</div>
-			<!--End Modal for user validation-->
+			<!--End Modal for adding new user-->
+			
+			<!-- Modal for adding new user -->
+			
+			<div class="modal fade" id="new_user_form" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" ng-click="loadAndShowLoginPage()" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" id="myModalLabel">Create New User</h4>
+			      </div>
+			      <div class="modal-body">
+			        <form role="form" name="authForm" >
+						<div class="form-group">
+						    <label for="exampleInputEmail1">Email address</label>
+							<input type="email" class="form-control" id="authEmail" ng-model="user.mail" placeholder="Enter email" required />
+						</div>
+						<div class="form-group">
+						    <label for="exampleInputPassword1">Password</label>
+						    <input type="password" class="form-control" id="authPass" ng-minlength="4" ng-model="user.password" placeholder="Password" required />
+						</div>
+						<span ng-show="authForm.$invalid && authForm.$dirty">
+			      			Email and Password fields are required.
+				  		</span>
+			        </form>
+			      </div>
+			      <div class="modal-footer">
+			      
+			        <button type="button" class="btn btn-lg btn-primary" ng-disabled="authForm.$invalid" ng-click="registerUser($event)">Add User</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<!--End Modal for adding new user-->
+
+<!-- -------------------------------------------------------------- -->
+
+			<!-- Modal for logging out-->
+			<div class="modal fade" id="logOut" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title text-center" id="myModalLabel">User Logout</h4>
+			      </div>
+			      <div class="modal-body">			      
+			      	<p>Are you sure you wish to logout user: {{email}}</p>			      	  
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" ng-click="logoutUser()" data-dismiss="modal">Logout</button>
+			      </div>
+			    </div>
+			  </div>
+			</div>
+			<!--End Modal forlogging out-->
 
 <!-- -------------------------------------------------------------- -->
 

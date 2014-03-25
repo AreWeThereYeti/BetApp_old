@@ -2,14 +2,13 @@
 var betApp = angular.module('betApp', []);	
 
 
-betApp.controller('AppCtrl', ['$scope', 'betService', function($scope, betService) {
+betApp.controller('AppCtrl', ['$scope', 'betService', '$window', function($scope, betService, $window) {
 
 	$scope.shortName = 'WebSqlDB';
 	$scope.version = '1.0';
 	$scope.displayName = 'WebSqlDB';
 	$scope.maxSize = 65535;
 	$scope.selectedBet;
-	
 
 	$scope.init = function(){	   
 /* 		debugging function */
@@ -312,14 +311,20 @@ $scope.method = 'POST';
 	console.log('registering new user: '+$scope.user.mail);
 	
 	betService.pushUserToServer($scope.user)
-			.then(function(status) {
+			.then(function(data) {
 			    // this callback will be called asynchronously
 			    // when the response is available
-			    console.log("Success!!" + status);
-			    if(status == 200){
-			    	console.log("user is uploaded, storring loacally");
+			    if(!!data.error){
+			    	console.log("error: "+ data.error);
+			    	alert(data.error);
+
+				}else{
+			    
+			    	console.log("user is uploaded, storring loacally and in session");
+			    	$window.sessionStorage.token = data.token;
+
 				  	$scope.$root.db.transaction(function(transaction) {
-					  		transaction.executeSql('INSERT INTO AUTH (email, password) VALUES ("'+$scope.user.mail+'", "'+$scope.user.password+'")',[]);
+					  		transaction.executeSql('INSERT INTO AUTH (email, password,token) VALUES ("'+$scope.user.mail+'", "'+$scope.user.password+'", "'+data.token+'")',[]);
 					  	},function error(err){
 						  	alert("Ups, noget gik galt. Prøv venligst igen")
 						  	console.log(err)
@@ -341,13 +346,22 @@ $scope.method = 'POST';
   
   $scope.logoutUser = function(){
 	console.log('logging out user: '+ $scope.email);
-	$scope.$root.db.transaction(function(transaction) {
+	
+	// Checks if bets are synced before lofout, needs to throw an error if this is not the case!!!
+	$scope.checkIfBetIsSynced();
+	        // Erase the token if the user logs out
+    delete $window.sessionStorage.token;
+	$scope.$root.db.transaction(function(transaction) {			
 			$scope.dropTables(); 
 		},function error(err){
 				alert("Ups, noget gik galt. Prøv venligst igen")
 				console.log(err)
 		}, function success(){
 			$('#logOut').modal('hide');
+			$scope.$apply(
+				$scope.user.mail = "",
+				$scope.user.password = ""
+				);
 			$scope.init();
 			
 		}
@@ -356,30 +370,36 @@ $scope.method = 'POST';
     
   $scope.submitToken = function(){
 		// this is the section that actually inserts the values into the User table
-		console.log('submitting access token');
+		console.log('requesting access token');
 		
 		betService.checkUserWithServer($scope.user)
 			.then(function(data) {
 			    // this callback will be called asynchronously
 			    // when the response is available
-			    console.log("Success!!" + data.token + " data: ");
-			    	console.log("user is uploaded, storring loacally");
+			    if(!!data.error){
+			    	console.log("error: "+ data.error);
+			    	alert("Wrong email or password. Please try again.")
 
-					// ADD DB QUERY: CHECK IF 'user' (user.email&user.password) matches a user in the DB 'auth' table. if yes then generate and return token.
-					
+				}else{
+				    console.log("Success!!" + data.token);
+				    console.log("user is uploaded, storring loacally and in session");
+					$window.sessionStorage.token = data.token;
+
+						// ADD DB QUERY: CHECK IF 'user' (user.email&user.password) matches a user in the DB 'auth' table. if yes then generate and return token.
+						
 					$scope.$root.db.transaction(function(transaction) {
 						transaction.executeSql('INSERT INTO AUTH (email, password, token) VALUES ("'+$scope.user.mail+'", "'+$scope.user.password+'","'+data.token+'" )',[]);
 						},function error(err){
-							alert("Ups, noget gik galt. Prøv venligst igen")
-							console.log(err)
+								alert("Ups, noget gik galt. Prøv venligst igen")
+								console.log(err)
 						}, function success(){
-							$('#new_user_form').modal('hide');
-							$('#validation_form').modal('hide');
-							$scope.checkValidation();
-
+								$('#new_user_form').modal('hide');
+								$('#validation_form').modal('hide');
+								$scope.checkValidation();
+	
 						}
 					);
-				
+				}
 			})
 		
 	}
@@ -480,7 +500,7 @@ betApp.service('betService', ['$http', '$q', function($http, $q){
 				url		: serverURL + '/auth/new',
 				data    : angular.toJson(user)  
 		}).success(function(data, status, headers){
-			d.resolve(status);
+			d.resolve(data);
 			
 		}).error(function(data, status, headers){
 			d.reject(status);
@@ -496,3 +516,47 @@ betApp.service('betService', ['$http', '$q', function($http, $q){
 	};
 
 }]);
+
+
+// Authorization interceptor 
+
+betApp.factory('authInterceptor', function ($rootScope, $q, $window) {
+  			
+   console.log('DEBUGGING: intercepting ....');
+
+/*
+  // may contain a scope issuse... tries to access local db for token -- doing sessionStorage instead
+
+   var token;
+   $scope.db.transaction(function (tx){
+			tx.executeSql('SELECT * FROM Auth', [], function (tx, result){	 
+				var dataset = result.rows;
+				if (!!dataset.length){
+					token = dataset[0].token;
+				} 										
+		},function error(err){
+			console.log(err);
+		}, function success(){});
+        // Erase the token if the user fails to log in
+		
+*/
+  return {
+    request: function (config) {
+      config.headers = config.headers || {};
+     if ($window.sessionStorage.token) {
+        config.headers.Authorization = 'Bearer ' + $window.sessionStorage.token;
+        } 
+      return config;
+    },
+    responseError: function (rejection) {
+      if (rejection.status === 401) {
+        // handle the case where the user is not authenticated
+      }
+      return $q.reject(rejection);
+    }
+  };
+});
+
+betApp.config(function ($httpProvider) {
+  $httpProvider.interceptors.push('authInterceptor');
+});
